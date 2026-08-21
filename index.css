@@ -1,1 +1,31 @@
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+h1 {
+    margin: 15px 0 8px;
+}
+
+#info {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+canvas {
+    border: 3px solid white;
+    background: #202040;
+    max-width: 95%;
+    height: auto;
+}
+
+p {
+    font-size: 16px;
+}
