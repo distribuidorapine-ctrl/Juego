@@ -2,74 +2,122 @@
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
+    padding: 0;
+}
+
+body {
     min-height: 100vh;
 
-    background: #080812;
+    background:
+        radial-gradient(
+            circle at top,
+            #20204a 0%,
+            #0c0c18 55%,
+            #05050a 100%
+        );
 
     color: white;
 
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 
     text-align: center;
+
+    overflow-x: hidden;
 }
 
 h1 {
-    margin: 15px 0;
+    margin: 15px 0 8px;
 
     font-size: 32px;
 
-    text-shadow: 0 0 12px #6666ff;
+    text-shadow:
+        0 0 10px #7777ff;
 }
 
 #info {
     display: inline-block;
 
-    padding: 10px 20px;
-
     margin-bottom: 10px;
 
-    background: #17172b;
+    padding: 8px 15px;
 
-    border: 2px solid #6666aa;
+    border: 2px solid #555577;
 
     border-radius: 10px;
 
+    background: rgba(0, 0, 0, 0.45);
+
     font-size: 18px;
+
+    font-weight: bold;
 }
 
 #game {
     display: block;
 
     width: 1000px;
-    max-width: 95%;
+
+    max-width: 95vw;
 
     height: auto;
 
-    margin: auto;
+    margin: 0 auto;
+
+    border: 3px solid #eeeeee;
+
+    border-radius: 6px;
 
     background: #111122;
 
-    border: 3px solid white;
-
-    border-radius: 8px;
+    box-shadow:
+        0 0 20px rgba(0, 0, 0, 0.8);
 }
 
 #controles {
+    margin-top: 12px;
+
     font-size: 16px;
 
-    color: #cccccc;
+    color: #dddddd;
 }
 
 #mensaje {
     min-height: 30px;
 
-    margin-top: 8px;
+    margin-top: 10px;
 
-    font-size: 20px;
+    font-size: 22px;
 
     font-weight: bold;
 
-    color: #ffff66;
+    color: #ffffff;
+
+    text-shadow:
+        0 0 8px #7777ff;
+}
+
+span {
+    color: #ffffff;
+}
+
+@media (max-width: 700px) {
+
+    h1 {
+        font-size: 24px;
+    }
+
+    #info {
+        font-size: 14px;
+    }
+
+    #controles {
+        font-size: 13px;
+    }
+
+    #mensaje {
+        font-size: 18px;
+    }
 }
