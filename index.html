@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Mi Plataformer</title>
 
     <link rel="stylesheet" href="./index.css">
+
 </head>
 
 <body>
@@ -14,27 +19,92 @@
     <h1>⚔️ MI PLATAFORMER</h1>
 
     <div id="info">
-        ❤️ Vida: <span id="vida">5</span>
+
+        ❤️ Vida:
+        <span id="vida">5</span>
+
         &nbsp;&nbsp;
-        🪙 Monedas: <span id="monedas">0</span>
+
+        🪙 Monedas:
+        <span id="monedas">0</span>
+
         &nbsp;&nbsp;
-        🏆 Nivel: <span id="nivel">1</span>
+
+        🏆 Nivel:
+        <span id="nivel">1</span>
+
         &nbsp;&nbsp;
-        🌊 Oleada: <span id="oleada">1</span>
+
+        🌊 Oleada:
+        <span id="oleada">1</span>
+
     </div>
 
-    <canvas id="game" width="1000" height="600"></canvas>
 
-    <p id="controles">
-        <b>A / D</b> Mover |
-        <b>ESPACIO</b> Saltar |
-        <b>J</b> Ataque |
-        <b>K</b> Disparo
+    <canvas
+        id="game"
+        width="1000"
+        height="600">
+    </canvas>
+
+
+    <p>
+        A / D = Mover |
+        ESPACIO = Saltar |
+        J = Atacar |
+        K = Disparar
     </p>
 
-    <div id="mensaje">¡Juego iniciado!</div>
 
-    <script src="./index.javascript"></script>
+    <h2 id="mensaje">
+        ¡JUEGO FUNCIONANDO!
+    </h2>
+
+
+    <!-- PRUEBA DIRECTA -->
+    <script>
+
+        document.getElementById("mensaje").textContent =
+            "✅ JAVASCRIPT FUNCIONA";
+
+        const canvas =
+            document.getElementById("game");
+
+        const ctx =
+            canvas.getContext("2d");
+
+
+        ctx.fillStyle = "#111122";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+
+        ctx.fillStyle = "white";
+
+        ctx.font = "40px Arial";
+
+        ctx.fillText(
+            "JUEGO FUNCIONANDO",
+            300,
+            280
+        );
+
+
+        ctx.font = "22px Arial";
+
+        ctx.fillText(
+            "GitHub Pages está ejecutando JavaScript",
+            260,
+            330
+        );
+
+    </script>
 
 </body>
+
 </html>
