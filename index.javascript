@@ -1,66 +1,76 @@
 "use strict";
 
-// =====================================================
-// CANVAS
-// =====================================================
+/* =====================================================
+   CONFIGURACIÓN
+===================================================== */
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
-const vidaTexto = document.getElementById("vida");
-const monedasTexto = document.getElementById("monedas");
+const vidaHTML = document.getElementById("vida");
+const monedasHTML = document.getElementById("monedas");
+const nivelHTML = document.getElementById("nivel");
+const oleadaHTML = document.getElementById("oleada");
+const mensajeHTML = document.getElementById("mensaje");
 
-const nivelTexto = document.getElementById("nivel");
-const oleadaTexto = document.getElementById("oleada");
-
-const mensaje = document.getElementById("mensaje");
+const ANCHO = canvas.width;
+const ALTO = canvas.height;
 
 
-// =====================================================
-// TECLADO
-// =====================================================
+/* =====================================================
+   TECLADO
+===================================================== */
 
 const teclas = {};
 
-document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function (e) {
 
-    teclas[e.key.toLowerCase()] = true;
+    const tecla = e.key.toLowerCase();
+
+    teclas[tecla] = true;
 
     if (e.code === "Space") {
+
         teclas.space = true;
+
         e.preventDefault();
     }
 
 });
 
-document.addEventListener("keyup", function(e) {
+document.addEventListener("keyup", function (e) {
 
-    teclas[e.key.toLowerCase()] = false;
+    const tecla = e.key.toLowerCase();
+
+    teclas[tecla] = false;
 
     if (e.code === "Space") {
+
         teclas.space = false;
     }
 
 });
 
 
-// =====================================================
-// JUGADOR
-// =====================================================
+/* =====================================================
+   JUGADOR
+===================================================== */
 
 const jugador = {
 
-    x: 100,
-    y: 300,
+    x: 80,
+    y: 400,
 
-    ancho: 35,
-    alto: 50,
+    ancho: 34,
+    alto: 48,
 
     velocidad: 5,
 
     velocidadY: 0,
-    gravedad: 0.6,
-    salto: -13,
+
+    gravedad: 0.65,
+
+    fuerzaSalto: -13,
 
     suelo: false,
 
@@ -68,116 +78,139 @@ const jugador = {
 
     vida: 5,
 
-    atacando: false,
-    ataqueTiempo: 0,
-    ataqueGolpeados: [],
+    invulnerable: 0,
 
-    invulnerable: false,
-    invulnerableTiempo: 0
+    atacando: false,
+
+    tiempoAtaque: 0,
+
+    golpeados: [],
+
+    disparoCooldown: 0
 };
 
 
-// =====================================================
-// SISTEMA DE NIVELES
-// =====================================================
+/* =====================================================
+   JUEGO
+===================================================== */
 
 let nivel = 1;
+
 let oleada = 1;
 
 const OLEADAS_POR_NIVEL = 3;
 
-let cambiandoOleada = false;
-let tiempoCambio = 0;
+let cambiando = false;
+
+let contadorCambio = 0;
 
 
-// =====================================================
-// MONEDAS
-// =====================================================
+/* =====================================================
+   MONEDAS
+===================================================== */
 
 let monedas = [];
 
-let cantidadMonedas = 0;
+let totalMonedas = 0;
 
-// Monedas acumuladas desde que empezó el juego
-let monedasParaVida = 0;
-
-
-// =====================================================
-// MAPA
-// =====================================================
-
-let plataformas = [];
+let monedasDesdeVida = 0;
 
 
-// =====================================================
-// ENEMIGOS
-// =====================================================
+/* =====================================================
+   ENEMIGOS
+===================================================== */
 
 let enemigos = [];
 
 
-// =====================================================
-// BALAS
-// =====================================================
+/* =====================================================
+   BALAS
+===================================================== */
 
 let balasJugador = [];
+
 let balasEnemigos = [];
 
-let puedeDisparar = true;
+
+/* =====================================================
+   MAPA
+===================================================== */
+
+let plataformas = [];
 
 
-// =====================================================
-// COLISIÓN
-// =====================================================
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function aleatorio(min, max) {
+
+    return Math.random() * (max - min) + min;
+
+}
+
 
 function colision(a, b) {
 
     return (
 
         a.x < b.x + b.ancho &&
+
         a.x + a.ancho > b.x &&
+
         a.y < b.y + b.alto &&
+
         a.y + a.alto > b.y
 
     );
+
 }
 
 
-// =====================================================
-// CREAR MAPA
-// =====================================================
+function actualizarHUD() {
+
+    vidaHTML.textContent = jugador.vida;
+
+    monedasHTML.textContent = totalMonedas;
+
+    nivelHTML.textContent = nivel;
+
+    oleadaHTML.textContent = oleada;
+
+}
+
+
+/* =====================================================
+   MAPAS
+===================================================== */
 
 function crearMapa() {
 
     plataformas = [];
 
 
-    // SUELO PRINCIPAL
+    // SUELO
 
     plataformas.push({
-
         x: 0,
         y: 550,
         ancho: 1000,
         alto: 50
-
     });
 
-
-    // NIVEL 1
 
     if (nivel === 1) {
 
         plataformas.push({
-            x: 100,
+            x: 80,
             y: 450,
             ancho: 200,
             alto: 25
         });
 
         plataformas.push({
-            x: 400,
-            y: 380,
+            x: 380,
+            y: 370,
             ancho: 220,
             alto: 25
         });
@@ -185,35 +218,33 @@ function crearMapa() {
         plataformas.push({
             x: 700,
             y: 450,
-            ancho: 200,
+            ancho: 210,
             alto: 25
         });
 
         plataformas.push({
             x: 600,
-            y: 270,
-            ancho: 180,
+            y: 250,
+            ancho: 190,
             alto: 25
         });
 
     }
 
 
-    // NIVEL 2
-
     else if (nivel === 2) {
 
         plataformas.push({
-            x: 50,
+            x: 40,
             y: 430,
-            ancho: 150,
+            ancho: 160,
             alto: 25
         });
 
         plataformas.push({
             x: 280,
             y: 350,
-            ancho: 160,
+            ancho: 170,
             alto: 25
         });
 
@@ -225,7 +256,7 @@ function crearMapa() {
         });
 
         plataformas.push({
-            x: 760,
+            x: 750,
             y: 330,
             ancho: 180,
             alto: 25
@@ -233,27 +264,25 @@ function crearMapa() {
 
         plataformas.push({
             x: 400,
-            y: 220,
-            ancho: 170,
+            y: 210,
+            ancho: 180,
             alto: 25
         });
 
     }
 
 
-    // NIVEL 3
-
     else if (nivel === 3) {
 
         plataformas.push({
-            x: 60,
+            x: 50,
             y: 420,
             ancho: 130,
             alto: 25
         });
 
         plataformas.push({
-            x: 240,
+            x: 230,
             y: 300,
             ancho: 140,
             alto: 25
@@ -261,43 +290,41 @@ function crearMapa() {
 
         plataformas.push({
             x: 430,
-            y: 450,
-            ancho: 130,
-            alto: 25
-        });
-
-        plataformas.push({
-            x: 600,
-            y: 330,
+            y: 440,
             ancho: 140,
             alto: 25
         });
 
         plataformas.push({
-            x: 800,
-            y: 230,
+            x: 610,
+            y: 320,
             ancho: 140,
             alto: 25
         });
 
         plataformas.push({
-            x: 450,
-            y: 180,
+            x: 820,
+            y: 220,
             ancho: 130,
+            alto: 25
+        });
+
+        plataformas.push({
+            x: 440,
+            y: 170,
+            ancho: 140,
             alto: 25
         });
 
     }
 
 
-    // NIVEL 4
-
     else if (nivel === 4) {
 
         plataformas.push({
-            x: 50,
-            y: 350,
-            ancho: 120,
+            x: 40,
+            y: 360,
+            ancho: 130,
             alto: 25
         });
 
@@ -325,7 +352,7 @@ function crearMapa() {
         plataformas.push({
             x: 750,
             y: 300,
-            ancho: 110,
+            ancho: 120,
             alto: 25
         });
 
@@ -339,14 +366,12 @@ function crearMapa() {
     }
 
 
-    // NIVEL 5+
-
     else {
 
         plataformas.push({
-            x: 40,
+            x: 30,
             y: 420,
-            ancho: 120,
+            ancho: 130,
             alto: 25
         });
 
@@ -358,9 +383,9 @@ function crearMapa() {
         });
 
         plataformas.push({
-            x: 370,
+            x: 360,
             y: 440,
-            ancho: 120,
+            ancho: 130,
             alto: 25
         });
 
@@ -397,9 +422,9 @@ function crearMapa() {
 }
 
 
-// =====================================================
-// FÍSICA DE ENTIDADES
-// =====================================================
+/* =====================================================
+   FÍSICA
+===================================================== */
 
 function aplicarFisica(entidad) {
 
@@ -412,34 +437,37 @@ function aplicarFisica(entidad) {
 
     for (const plataforma of plataformas) {
 
+        const horizontal =
+
+            entidad.x + entidad.ancho > plataforma.x &&
+
+            entidad.x < plataforma.x + plataforma.ancho;
+
+
+        if (!horizontal) {
+            continue;
+        }
+
+
+        const estabaArriba =
+
+            entidad.y + entidad.alto <= plataforma.y + 12;
+
+
+        const estaBajando = entidad.velocidadY >= 0;
+
+
         if (
 
-            entidad.x <
-            plataforma.x + plataforma.ancho
+            estabaArriba &&
 
-            &&
+            estaBajando &&
 
-            entidad.x + entidad.ancho >
-            plataforma.x
-
-            &&
-
-            entidad.y + entidad.alto >=
-            plataforma.y
-
-            &&
-
-            entidad.y + entidad.alto <=
-            plataforma.y + plataforma.alto + 20
-
-            &&
-
-            entidad.velocidadY >= 0
+            entidad.y + entidad.alto >= plataforma.y
 
         ) {
 
-            entidad.y =
-                plataforma.y - entidad.alto;
+            entidad.y = plataforma.y - entidad.alto;
 
             entidad.velocidadY = 0;
 
@@ -452,255 +480,28 @@ function aplicarFisica(entidad) {
 }
 
 
-// =====================================================
-// BUSCAR PLATAFORMA DEBAJO
-// =====================================================
-
-function buscarSuelo(enemigo) {
-
-    let mejorY = 500;
-
-
-    for (const plataforma of plataformas) {
-
-        const tocaHorizontal =
-
-            enemigo.x + enemigo.ancho >
-            plataforma.x &&
-
-            enemigo.x <
-            plataforma.x + plataforma.ancho;
-
-
-        if (!tocaHorizontal) {
-            continue;
-        }
-
-
-        if (
-            plataforma.y >= enemigo.y &&
-            plataforma.y < mejorY
-        ) {
-
-            mejorY = plataforma.y;
-        }
-
-    }
-
-
-    return mejorY;
-}
-
-
-// =====================================================
-// COLOCAR ENEMIGO EN EL MAPA
-// =====================================================
-
-function colocarEnemigo(enemigo) {
-
-    const suelo =
-        buscarSuelo(enemigo);
-
-
-    enemigo.y =
-        suelo - enemigo.alto;
-
-    enemigo.velocidadY = 0;
-
-    enemigo.suelo = true;
-
-}
-
-
-// =====================================================
-// CREAR ENEMIGO
-// =====================================================
-
-function crearEnemigo(tipo, x) {
-
-    const enemigo = {
-
-        x: x,
-        y: 100,
-
-        ancho: 35,
-        alto: 45,
-
-        velocidad: 1.5,
-
-        velocidadY: 0,
-        gravedad: 0.6,
-
-        salto: -11,
-
-        suelo: false,
-
-        direccion: -1,
-
-        vida: 3,
-        vidaMaxima: 3,
-
-        tipo: tipo,
-
-        contadorSalto: 60,
-
-        contadorDisparo: 100,
-
-        daño: 1
-
-    };
-
-
-    // NORMAL
-
-    if (tipo === "normal") {
-
-        enemigo.velocidad = 1.5;
-
-        enemigo.vida = 3;
-        enemigo.vidaMaxima = 3;
-
-    }
-
-
-    // NARANJA SALTADOR
-
-    if (tipo === "saltador") {
-
-        enemigo.velocidad = 2;
-
-        enemigo.vida = 4;
-        enemigo.vidaMaxima = 4;
-
-        enemigo.contadorSalto = 50;
-
-    }
-
-
-    // NEGRO TANQUE
-
-    if (tipo === "tanque") {
-
-        enemigo.ancho = 50;
-        enemigo.alto = 65;
-
-        enemigo.velocidad = 0.8;
-
-        enemigo.vida = 8;
-        enemigo.vidaMaxima = 8;
-
-        enemigo.daño = 2;
-
-    }
-
-
-    // VOLADOR
-
-    if (tipo === "volador") {
-
-        enemigo.ancho = 40;
-        enemigo.alto = 35;
-
-        enemigo.velocidad = 1.6;
-
-        enemigo.vida = 5;
-        enemigo.vidaMaxima = 5;
-
-        enemigo.y =
-            100 + Math.random() * 250;
-
-    }
-
-
-    // DISPARADOR
-
-    if (tipo === "disparador") {
-
-        enemigo.velocidad = 1;
-
-        enemigo.vida = 5;
-        enemigo.vidaMaxima = 5;
-
-        enemigo.contadorDisparo = 80;
-
-    }
-
-
-    // ÉLITE
-
-    if (tipo === "elite") {
-
-        enemigo.ancho = 50;
-        enemigo.alto = 65;
-
-        enemigo.velocidad = 1.8;
-
-        enemigo.vida = 12;
-        enemigo.vidaMaxima = 12;
-
-        enemigo.daño = 2;
-
-    }
-
-
-    // Los voladores NO necesitan suelo
-
-    if (tipo !== "volador") {
-
-        colocarEnemigo(enemigo);
-
-    }
-
-
-    return enemigo;
-
-}
-
-
-// =====================================================
-// CREAR MONEDAS
-// =====================================================
+/* =====================================================
+   MONEDAS
+===================================================== */
 
 function crearMonedas() {
 
     monedas = [];
 
 
-    // =================================================
-    // LAS MONEDAS AHORA SON NUEVAS CADA NIVEL
-    // =================================================
+    /*
+       LAS MONEDAS SE GENERAN DE NUEVO
+       CUANDO COMIENZA UN NUEVO NIVEL.
+    */
 
     const posiciones = [
 
-        {
-            x: 150,
-            y: 400
-        },
-
-        {
-            x: 270,
-            y: 250
-        },
-
-        {
-            x: 480,
-            y: 330
-        },
-
-        {
-            x: 650,
-            y: 220
-        },
-
-        {
-            x: 820,
-            y: 400
-        },
-
-        {
-            x: 550,
-            y: 500
-        }
+        [130, 410],
+        [330, 310],
+        [490, 330],
+        [650, 210],
+        [800, 410],
+        [900, 150]
 
     ];
 
@@ -709,11 +510,12 @@ function crearMonedas() {
 
         monedas.push({
 
-            x: posicion.x,
+            x: posicion[0],
 
-            y: posicion.y,
+            y: posicion[1],
 
             ancho: 20,
+
             alto: 20,
 
             recogida: false
@@ -725,50 +527,249 @@ function crearMonedas() {
 }
 
 
-// =====================================================
-// CREAR OLEADA
-// =====================================================
+/* =====================================================
+   CREAR ENEMIGO
+===================================================== */
+
+function nuevoEnemigo(tipo, x) {
+
+    const enemigo = {
+
+        tipo: tipo,
+
+        x: x,
+
+        y: 100,
+
+        ancho: 36,
+
+        alto: 46,
+
+        velocidad: 1.5,
+
+        velocidadY: 0,
+
+        gravedad: 0.6,
+
+        salto: -11,
+
+        suelo: false,
+
+        direccion: -1,
+
+        vida: 3,
+
+        vidaMaxima: 3,
+
+        cooldown: 80,
+
+        fase: aleatorio(0, Math.PI * 2)
+
+    };
+
+
+    if (tipo === "normal") {
+
+        enemigo.velocidad = 1.5;
+
+        enemigo.vida = 3;
+
+        enemigo.vidaMaxima = 3;
+
+    }
+
+
+    if (tipo === "saltador") {
+
+        enemigo.velocidad = 1.8;
+
+        enemigo.vida = 4;
+
+        enemigo.vidaMaxima = 4;
+
+        enemigo.cooldown = 50;
+
+    }
+
+
+    if (tipo === "tanque") {
+
+        enemigo.ancho = 50;
+
+        enemigo.alto = 60;
+
+        enemigo.velocidad = 0.8;
+
+        enemigo.vida = 8;
+
+        enemigo.vidaMaxima = 8;
+
+    }
+
+
+    if (tipo === "volador") {
+
+        enemigo.ancho = 42;
+
+        enemigo.alto = 34;
+
+        enemigo.velocidad = 1.7;
+
+        enemigo.vida = 5;
+
+        enemigo.vidaMaxima = 5;
+
+        enemigo.y = aleatorio(100, 350);
+
+    }
+
+
+    if (tipo === "disparador") {
+
+        enemigo.velocidad = 1;
+
+        enemigo.vida = 5;
+
+        enemigo.vidaMaxima = 5;
+
+        enemigo.cooldown = 80;
+
+    }
+
+
+    if (tipo === "elite") {
+
+        enemigo.ancho = 52;
+
+        enemigo.alto = 62;
+
+        enemigo.velocidad = 1.7;
+
+        enemigo.vida = 12;
+
+        enemigo.vidaMaxima = 12;
+
+    }
+
+
+    if (tipo !== "volador") {
+
+        colocarEnSuelo(enemigo);
+
+    }
+
+
+    return enemigo;
+
+}
+
+
+/* =====================================================
+   COLOCAR ENEMIGO SOBRE EL SUELO
+===================================================== */
+
+function colocarEnSuelo(enemigo) {
+
+    let plataformaEncontrada = null;
+
+
+    for (const plataforma of plataformas) {
+
+        if (
+
+            enemigo.x + enemigo.ancho > plataforma.x &&
+
+            enemigo.x < plataforma.x + plataforma.ancho
+
+        ) {
+
+            if (
+
+                plataformaEncontrada === null ||
+
+                plataforma.y < plataformaEncontrada.y
+
+            ) {
+
+                plataformaEncontrada = plataforma;
+
+            }
+
+        }
+
+    }
+
+
+    if (plataformaEncontrada) {
+
+        enemigo.y =
+            plataformaEncontrada.y -
+            enemigo.alto;
+
+    }
+
+    else {
+
+        enemigo.y =
+            550 -
+            enemigo.alto;
+
+    }
+
+
+    enemigo.velocidadY = 0;
+
+    enemigo.suelo = true;
+
+}
+
+
+/* =====================================================
+   CREAR OLEADA
+===================================================== */
 
 function crearOleada() {
 
     enemigos = [];
 
     balasJugador = [];
+
     balasEnemigos = [];
 
 
     crearMapa();
 
 
-    jugador.x = 100;
+    /*
+       IMPORTANTE:
+
+       Las monedas NO se crean aquí.
+
+       Por eso no reaparecen cada oleada.
+
+       Solo aparecen nuevamente cuando
+       cambia el NIVEL.
+    */
+
+
+    jugador.x = 80;
+
     jugador.y = 300;
+
     jugador.velocidadY = 0;
 
 
-    // =================================================
-    // IMPORTANTE:
-    // LAS MONEDAS NO SE CREAN AQUÍ.
-    //
-    // SOLO SE CREAN AL COMENZAR UN NIVEL.
-    //
-    // Así NO reaparecen durante cada oleada.
-    // =================================================
+    let cantidad =
+
+        2 +
+        nivel +
+        oleada;
 
 
-    const cantidad =
-        2 + nivel + oleada;
-
-
-    for (
-        let i = 0;
-        i < cantidad;
-        i++
-    ) {
+    for (let i = 0; i < cantidad; i++) {
 
         let tipo = "normal";
 
-
-        // NIVEL 1
 
         if (nivel === 1) {
 
@@ -777,8 +778,6 @@ function crearOleada() {
         }
 
 
-        // NIVEL 2
-
         else if (nivel === 2) {
 
             if (i % 3 === 0) {
@@ -786,6 +785,7 @@ function crearOleada() {
                 tipo = "saltador";
 
             }
+
             else {
 
                 tipo = "normal";
@@ -794,8 +794,6 @@ function crearOleada() {
 
         }
 
-
-        // NIVEL 3
 
         else if (nivel === 3) {
 
@@ -804,11 +802,13 @@ function crearOleada() {
                 tipo = "volador";
 
             }
+
             else if (i % 3 === 0) {
 
                 tipo = "saltador";
 
             }
+
             else {
 
                 tipo = "normal";
@@ -818,25 +818,26 @@ function crearOleada() {
         }
 
 
-        // NIVEL 4
-
         else if (nivel === 4) {
 
             if (i % 5 === 0) {
 
+                tipo = "tanque";
+
+            }
+
+            else if (i % 4 === 0) {
+
                 tipo = "disparador";
 
             }
-            else if (i % 4 === 0) {
+
+            else if (i % 3 === 0) {
 
                 tipo = "volador";
 
             }
-            else if (i % 3 === 0) {
 
-                tipo = "tanque";
-
-            }
             else {
 
                 tipo = "saltador";
@@ -845,8 +846,6 @@ function crearOleada() {
 
         }
 
-
-        // NIVEL 5+
 
         else {
 
@@ -855,21 +854,25 @@ function crearOleada() {
                 tipo = "elite";
 
             }
+
             else if (i % 4 === 0) {
-
-                tipo = "disparador";
-
-            }
-            else if (i % 3 === 0) {
-
-                tipo = "volador";
-
-            }
-            else if (i % 2 === 0) {
 
                 tipo = "tanque";
 
             }
+
+            else if (i % 3 === 0) {
+
+                tipo = "disparador";
+
+            }
+
+            else if (i % 2 === 0) {
+
+                tipo = "volador";
+
+            }
+
             else {
 
                 tipo = "saltador";
@@ -879,76 +882,73 @@ function crearOleada() {
         }
 
 
-        // =================================================
-        // APARICIÓN
-        // =================================================
+        /*
+           LOS ENEMIGOS APARECEN EN DISTINTOS
+           PUNTOS DEL MAPA.
+
+           Ya no se quedan todos en la derecha.
+        */
 
         let x;
 
 
-        // Los enemigos aparecen a la derecha
-        // pero nunca pegados al borde.
+        if (i % 3 === 0) {
 
-        x =
-            450 +
-            Math.random() * 450;
+            x = aleatorio(400, 700);
 
+        }
 
-        if (x > 940) {
+        else if (i % 3 === 1) {
 
-            x = 900;
+            x = aleatorio(700, 900);
+
+        }
+
+        else {
+
+            x = aleatorio(250, 600);
 
         }
 
 
         enemigos.push(
-            crearEnemigo(
-                tipo,
-                x
-            )
+            nuevoEnemigo(tipo, x)
         );
 
     }
 
 
-    mensaje.textContent =
-        "⚔️ NIVEL " +
+    mensajeHTML.textContent =
+
+        "⚔️ Nivel " +
         nivel +
-        " - OLEADA " +
+        " - Oleada " +
         oleada;
 
 
-    actualizarInterfaz();
+    actualizarHUD();
 
 }
 
 
-// =====================================================
-// MOVIMIENTO DEL JUGADOR
-// =====================================================
+/* =====================================================
+   MOVIMIENTO DEL JUGADOR
+===================================================== */
 
 function moverJugador() {
 
-    if (
-        teclas.a ||
-        teclas.arrowleft
-    ) {
+    if (teclas["a"] || teclas["arrowleft"]) {
 
-        jugador.x -=
-            jugador.velocidad;
+        jugador.x -= jugador.velocidad;
 
         jugador.mirando = -1;
 
     }
 
 
-    if (
-        teclas.d ||
-        teclas.arrowright
-    ) {
+    if (teclas["d"] || teclas["arrowright"]) {
 
-        jugador.x +=
-            jugador.velocidad;
+        jugador.x += jugador.velocidad;
 
         jugador.mirando = 1;
 
@@ -957,11 +957,9 @@ function moverJugador() {
 
     if (
 
-        (
-            teclas.space ||
-            teclas.w ||
-            teclas.arrowup
-        )
+        (teclas.space ||
+        teclas["w"] ||
+        teclas["arrowup"])
 
         &&
 
@@ -970,7 +968,7 @@ function moverJugador() {
     ) {
 
         jugador.velocidadY =
-            jugador.salto;
+            jugador.fuerzaSalto;
 
         jugador.suelo = false;
 
@@ -988,27 +986,24 @@ function moverJugador() {
 
 
     if (
-        jugador.x +
-        jugador.ancho >
-        canvas.width
+        jugador.x + jugador.ancho > ANCHO
     ) {
 
         jugador.x =
-            canvas.width -
+            ANCHO -
             jugador.ancho;
 
     }
 
 
-    if (
-        jugador.y >
-        canvas.height + 100
-    ) {
+    if (jugador.y > ALTO + 100) {
 
-        perderVida();
+        recibirDaño();
 
-        jugador.x = 100;
+        jugador.x = 80;
+
         jugador.y = 300;
+
         jugador.velocidadY = 0;
 
     }
@@ -1016,23 +1011,34 @@ function moverJugador() {
 }
 
 
-// =====================================================
-// MOVIMIENTO ENEMIGO TERRESTRE
-// =====================================================
+/* =====================================================
+   ENEMIGOS TERRESTRES
+===================================================== */
 
-function moverTerrestre(enemigo) {
+function moverEnemigoTerrestre(enemigo) {
 
     aplicarFisica(enemigo);
 
 
-    // ================================================
-    // SI ESTÁ A LA IZQUIERDA DEL JUGADOR
-    // AVANZA A LA DERECHA
-    // ================================================
+    /*
+       AHORA LOS ENEMIGOS BUSCAN AL JUGADOR.
+
+       Esto evita que todos se queden quietos
+       en la derecha.
+    */
 
     if (
+        jugador.x <
+        enemigo.x - 5
+    ) {
+
+        enemigo.direccion = -1;
+
+    }
+
+    else if (
         jugador.x >
-        enemigo.x + 10
+        enemigo.x + 5
     ) {
 
         enemigo.direccion = 1;
@@ -1040,94 +1046,68 @@ function moverTerrestre(enemigo) {
     }
 
 
-    // ================================================
-    // SI ESTÁ A LA DERECHA
-    // AVANZA A LA IZQUIERDA
-    // ================================================
-
-    else if (
-        jugador.x <
-        enemigo.x - 10
-    ) {
-
-        enemigo.direccion = -1;
-
-    }
-
-
     enemigo.x +=
+
         enemigo.velocidad *
         enemigo.direccion;
 
 
-    // ================================================
-    // SOLUCIÓN AL PROBLEMA DE LA IZQUIERDA
-    // ================================================
+    /*
+       BORDE IZQUIERDO
 
-    if (
-        enemigo.x <= 5
-    ) {
+       Si llega a la izquierda no se queda
+       atrapado: cambia de dirección.
+    */
+
+    if (enemigo.x <= 5) {
 
         enemigo.x = 5;
 
-        // Si llega a la izquierda,
-        // se obliga a mirar hacia el jugador.
-
-        if (
-            jugador.x >
-            enemigo.x
-        ) {
-
-            enemigo.direccion = 1;
-
-        }
+        enemigo.direccion = 1;
 
     }
 
 
-    // DERECHA
+    /*
+       BORDE DERECHO
+    */
 
     if (
         enemigo.x +
         enemigo.ancho >=
-        canvas.width - 5
+        ANCHO - 5
     ) {
 
         enemigo.x =
-            canvas.width -
+            ANCHO -
             enemigo.ancho -
             5;
 
-
-        if (
-            jugador.x <
-            enemigo.x
-        ) {
-
-            enemigo.direccion = -1;
-
-        }
+        enemigo.direccion = -1;
 
     }
 
 }
 
 
-// =====================================================
-// ENEMIGO SALTADOR
-// =====================================================
+/* =====================================================
+   ENEMIGO SALTADOR
+===================================================== */
 
 function moverSaltador(enemigo) {
 
-    moverTerrestre(enemigo);
+    moverEnemigoTerrestre(enemigo);
 
 
-    enemigo.contadorSalto--;
+    enemigo.cooldown--;
 
 
     if (
+
         enemigo.suelo &&
-        enemigo.contadorSalto <= 0
+
+        enemigo.cooldown <= 0
+
     ) {
 
         enemigo.velocidadY =
@@ -1135,54 +1115,51 @@ function moverSaltador(enemigo) {
 
         enemigo.suelo = false;
 
-        enemigo.contadorSalto = 70;
+        enemigo.cooldown = 70;
 
     }
 
 }
 
 
-// =====================================================
-// ENEMIGO VOLADOR
-// =====================================================
+/* =====================================================
+   ENEMIGO VOLADOR
+===================================================== */
 
 function moverVolador(enemigo) {
 
-    const distanciaX =
+    const dx =
         jugador.x -
         enemigo.x;
 
-
-    const distanciaY =
+    const dy =
         jugador.y -
         enemigo.y;
 
 
-    if (
-        Math.abs(distanciaX) > 20
-    ) {
+    if (Math.abs(dx) > 20) {
 
         enemigo.x +=
-            Math.sign(distanciaX) *
+
+            Math.sign(dx) *
             enemigo.velocidad;
 
     }
 
 
-    if (
-        Math.abs(distanciaY) > 20
-    ) {
+    if (Math.abs(dy) > 20) {
 
         enemigo.y +=
-            Math.sign(distanciaY) *
+
+            Math.sign(dy) *
             0.8;
 
     }
 
 
-    if (enemigo.x < 20) {
+    if (enemigo.x < 10) {
 
-        enemigo.x = 20;
+        enemigo.x = 10;
 
     }
 
@@ -1190,12 +1167,13 @@ function moverVolador(enemigo) {
     if (
         enemigo.x +
         enemigo.ancho >
-        980
+        ANCHO - 10
     ) {
 
         enemigo.x =
-            980 -
-            enemigo.ancho;
+            ANCHO -
+            enemigo.ancho -
+            10;
 
     }
 
@@ -1222,42 +1200,15 @@ function moverVolador(enemigo) {
 }
 
 
-// =====================================================
-// DISPARADOR
-// =====================================================
-
-function moverDisparador(enemigo) {
-
-    moverTerrestre(enemigo);
-
-
-    enemigo.contadorDisparo--;
-
-
-    if (
-        enemigo.contadorDisparo <= 0
-    ) {
-
-        dispararEnemigo(enemigo);
-
-        enemigo.contadorDisparo = 100;
-
-    }
-
-}
-
-
-// =====================================================
-// ACTUALIZAR ENEMIGOS
-// =====================================================
+/* =====================================================
+   ACTUALIZAR ENEMIGOS
+===================================================== */
 
 function actualizarEnemigos() {
 
     for (const enemigo of enemigos) {
 
-        if (
-            enemigo.vida <= 0
-        ) {
+        if (enemigo.vida <= 0) {
 
             continue;
 
@@ -1272,6 +1223,7 @@ function actualizarEnemigos() {
 
         }
 
+
         else if (
             enemigo.tipo === "saltador"
         ) {
@@ -1280,36 +1232,51 @@ function actualizarEnemigos() {
 
         }
 
-        else if (
-            enemigo.tipo === "disparador"
-        ) {
-
-            moverDisparador(enemigo);
-
-        }
 
         else {
 
-            moverTerrestre(enemigo);
+            moverEnemigoTerrestre(enemigo);
 
         }
 
 
-        // CONTACTO CON JUGADOR
+        /*
+           ENEMIGO DISPARADOR
+        */
 
         if (
-            colision(
-                jugador,
-                enemigo
-            )
+            enemigo.tipo === "disparador"
         ) {
 
-            perderVida();
+            enemigo.cooldown--;
 
+
+            if (
+                enemigo.cooldown <= 0
+            ) {
+
+                dispararEnemigo(enemigo);
+
+                enemigo.cooldown = 100;
+
+            }
+
+        }
+
+
+        /*
+           DAÑO POR CONTACTO
+        */
+
+        if (
+            colision(jugador, enemigo)
+        ) {
+
+            recibirDaño();
 
             jugador.x +=
                 enemigo.direccion *
-                60;
+                45;
 
         }
 
@@ -1318,9 +1285,9 @@ function actualizarEnemigos() {
 }
 
 
-// =====================================================
-// ATAQUE DE ESPADA
-// =====================================================
+/* =====================================================
+   ATAQUE
+===================================================== */
 
 function actualizarAtaque() {
 
@@ -1331,37 +1298,37 @@ function actualizarAtaque() {
 
         jugador.atacando = true;
 
-        jugador.ataqueTiempo = 12;
+        jugador.tiempoAtaque = 12;
 
-        jugador.ataqueGolpeados = [];
+        jugador.golpeados = [];
 
     }
 
 
-    if (
-        !jugador.atacando
-    ) {
+    if (!jugador.atacando) {
 
         return;
 
     }
 
 
-    jugador.ataqueTiempo--;
+    jugador.tiempoAtaque--;
 
 
     const espada = {
 
         x:
+
             jugador.mirando === 1
 
                 ? jugador.x +
                   jugador.ancho
 
-                : jugador.x - 50,
+                : jugador.x -
+                  50,
 
         y:
-            jugador.y + 10,
+            jugador.y + 8,
 
         ancho: 50,
 
@@ -1370,9 +1337,7 @@ function actualizarAtaque() {
     };
 
 
-    for (
-        const enemigo of enemigos
-    ) {
+    for (const enemigo of enemigos) {
 
         if (
             enemigo.vida <= 0
@@ -1384,8 +1349,7 @@ function actualizarAtaque() {
 
 
         if (
-            jugador.ataqueGolpeados
-                .includes(enemigo)
+            jugador.golpeados.includes(enemigo)
         ) {
 
             continue;
@@ -1402,14 +1366,12 @@ function actualizarAtaque() {
 
             enemigo.vida--;
 
-            jugador.ataqueGolpeados.push(
-                enemigo
-            );
+            jugador.golpeados.push(enemigo);
 
 
             enemigo.x +=
                 jugador.mirando *
-                40;
+                35;
 
         }
 
@@ -1417,7 +1379,7 @@ function actualizarAtaque() {
 
 
     if (
-        jugador.ataqueTiempo <= 0
+        jugador.tiempoAtaque <= 0
     ) {
 
         jugador.atacando = false;
@@ -1427,15 +1389,15 @@ function actualizarAtaque() {
 }
 
 
-// =====================================================
-// DISPARO DEL JUGADOR
-// =====================================================
+/* =====================================================
+   DISPARAR JUGADOR
+===================================================== */
 
 function dispararJugador() {
 
     if (
         !teclas.k ||
-        !puedeDisparar
+        jugador.disparoCooldown > 0
     ) {
 
         return;
@@ -1446,17 +1408,20 @@ function dispararJugador() {
     balasJugador.push({
 
         x:
+
             jugador.mirando === 1
 
                 ? jugador.x +
                   jugador.ancho
 
-                : jugador.x - 12,
+                : jugador.x -
+                  12,
 
         y:
-            jugador.y + 22,
+            jugador.y + 20,
 
         ancho: 12,
+
         alto: 6,
 
         velocidad:
@@ -1465,26 +1430,25 @@ function dispararJugador() {
     });
 
 
-    puedeDisparar = false;
-
-
-    setTimeout(
-        function() {
-
-            puedeDisparar = true;
-
-        },
-        250
-    );
+    jugador.disparoCooldown = 15;
 
 }
 
 
-// =====================================================
-// BALAS DEL JUGADOR
-// =====================================================
+/* =====================================================
+   ACTUALIZAR BALAS JUGADOR
+===================================================== */
 
 function actualizarBalasJugador() {
+
+    if (
+        jugador.disparoCooldown > 0
+    ) {
+
+        jugador.disparoCooldown--;
+
+    }
+
 
     for (
         let i =
@@ -1493,6 +1457,7 @@ function actualizarBalasJugador() {
         i >= 0;
 
         i--
+
     ) {
 
         const bala =
@@ -1505,38 +1470,26 @@ function actualizarBalasJugador() {
 
         if (
             bala.x < -30 ||
-            bala.x >
-            canvas.width + 30
+            bala.x > ANCHO + 30
         ) {
 
-            balasJugador.splice(
-                i,
-                1
-            );
+            balasJugador.splice(i, 1);
 
             continue;
 
         }
 
 
-        for (
-            const enemigo of enemigos
-        ) {
+        for (const enemigo of enemigos) {
 
             if (
                 enemigo.vida > 0 &&
-                colision(
-                    bala,
-                    enemigo
-                )
+                colision(bala, enemigo)
             ) {
 
                 enemigo.vida--;
 
-                balasJugador.splice(
-                    i,
-                    1
-                );
+                balasJugador.splice(i, 1);
 
                 break;
 
@@ -1549,9 +1502,9 @@ function actualizarBalasJugador() {
 }
 
 
-// =====================================================
-// DISPARO ENEMIGO
-// =====================================================
+/* =====================================================
+   BALAS ENEMIGAS
+===================================================== */
 
 function dispararEnemigo(enemigo) {
 
@@ -1575,6 +1528,7 @@ function dispararEnemigo(enemigo) {
             enemigo.alto / 2,
 
         ancho: 12,
+
         alto: 12,
 
         velocidad:
@@ -1585,10 +1539,6 @@ function dispararEnemigo(enemigo) {
 }
 
 
-// =====================================================
-// ACTUALIZAR BALAS ENEMIGAS
-// =====================================================
-
 function actualizarBalasEnemigos() {
 
     for (
@@ -1598,6 +1548,7 @@ function actualizarBalasEnemigos() {
         i >= 0;
 
         i--
+
     ) {
 
         const bala =
@@ -1610,14 +1561,10 @@ function actualizarBalasEnemigos() {
 
         if (
             bala.x < -30 ||
-            bala.x >
-            canvas.width + 30
+            bala.x > ANCHO + 30
         ) {
 
-            balasEnemigos.splice(
-                i,
-                1
-            );
+            balasEnemigos.splice(i, 1);
 
             continue;
 
@@ -1631,12 +1578,9 @@ function actualizarBalasEnemigos() {
             )
         ) {
 
-            perderVida();
+            recibirDaño();
 
-            balasEnemigos.splice(
-                i,
-                1
-            );
+            balasEnemigos.splice(i, 1);
 
         }
 
@@ -1645,19 +1589,15 @@ function actualizarBalasEnemigos() {
 }
 
 
-// =====================================================
-// RECOGER MONEDAS
-// =====================================================
+/* =====================================================
+   MONEDAS
+===================================================== */
 
 function recogerMonedas() {
 
-    for (
-        const moneda of monedas
-    ) {
+    for (const moneda of monedas) {
 
-        if (
-            moneda.recogida
-        ) {
+        if (moneda.recogida) {
 
             continue;
 
@@ -1673,23 +1613,26 @@ function recogerMonedas() {
 
             moneda.recogida = true;
 
-            cantidadMonedas++;
+            totalMonedas++;
 
-            monedasParaVida++;
+            monedasDesdeVida++;
 
 
-            // CADA 10 MONEDAS
+            /*
+               CADA 10 MONEDAS
+               = 1 VIDA
+            */
 
             if (
-                monedasParaVida >= 10
+                monedasDesdeVida >= 10
             ) {
 
-                monedasParaVida -= 10;
+                monedasDesdeVida -= 10;
 
                 jugador.vida++;
 
-                mensaje.textContent =
-                    "🪙 10 MONEDAS = ❤️ +1 VIDA";
+                mensajeHTML.textContent =
+                    "🪙 ¡10 MONEDAS! +1 ❤️";
 
             }
 
@@ -1700,72 +1643,82 @@ function recogerMonedas() {
 }
 
 
-// =====================================================
-// ¿QUEDAN MONEDAS?
-// =====================================================
+/* =====================================================
+   COMPROBAR MONEDAS
+===================================================== */
 
-function quedanMonedas() {
+function todasLasMonedasRecogidas() {
 
-    return monedas.some(
-        function(moneda) {
+    for (const moneda of monedas) {
 
-            return !moneda.recogida;
+        if (!moneda.recogida) {
+
+            return false;
 
         }
-    );
+
+    }
+
+    return true;
 
 }
 
 
-// =====================================================
-// ¿QUEDAN ENEMIGOS?
-// =====================================================
+/* =====================================================
+   COMPROBAR ENEMIGOS
+===================================================== */
 
-function quedanEnemigos() {
+function todosLosEnemigosDerrotados() {
 
-    return enemigos.some(
-        function(enemigo) {
+    for (const enemigo of enemigos) {
 
-            return enemigo.vida > 0;
+        if (enemigo.vida > 0) {
+
+            return false;
 
         }
-    );
+
+    }
+
+    return true;
 
 }
 
 
-// =====================================================
-// COMPROBAR FIN DE OLEADA
-// =====================================================
+/* =====================================================
+   FINAL DE OLEADA
+===================================================== */
 
-function comprobarOleada() {
+function comprobarFinOleada() {
 
-    if (
-        cambiandoOleada
-    ) {
+    if (cambiando) {
 
         return;
 
     }
 
 
-    const enemigosVivos =
-        quedanEnemigos();
+    const enemigosDerrotados =
+        todosLosEnemigosDerrotados();
 
 
-    const monedasRestantes =
-        quedanMonedas();
+    const monedasCompletas =
+        todasLasMonedasRecogidas();
 
 
-    // =================================================
-    // MUY IMPORTANTE:
-    //
-    // NO TERMINA SI QUEDA UNA SOLA MONEDA.
-    // =================================================
+    /*
+       AQUÍ ESTÁ EL CAMBIO IMPORTANTE:
+
+       TIENES QUE DERROTAR A TODOS LOS ENEMIGOS
+       Y RECOGER TODAS LAS MONEDAS.
+
+       SI FALTA UNA SOLA MONEDA,
+       NO PASA LA OLEADA.
+    */
 
     if (
-        !enemigosVivos &&
-        !monedasRestantes
+        enemigosDerrotados &&
+        monedasCompletas
     ) {
 
         completarOleada();
@@ -1774,59 +1727,62 @@ function comprobarOleada() {
 
 
     else if (
-        !enemigosVivos &&
-        monedasRestantes
+        enemigosDerrotados &&
+        !monedasCompletas
     ) {
 
-        mensaje.textContent =
-            "🪙 RECOGE TODAS LAS MONEDAS";
+        mensajeHTML.textContent =
+            "🪙 ¡FALTAN MONEDAS! RECOGE TODAS";
 
     }
 
 }
 
 
-// =====================================================
-// COMPLETAR OLEADA
-// =====================================================
+/* =====================================================
+   COMPLETAR OLEADA
+===================================================== */
 
 function completarOleada() {
 
-    cambiandoOleada = true;
+    cambiando = true;
 
-    tiempoCambio = 120;
+    contadorCambio = 120;
 
 
-    // +1 VIDA
+    /*
+       CADA OLEADA SUPERADA
+       = 1 VIDA
+    */
 
     jugador.vida++;
 
 
-    mensaje.textContent =
-        "🏆 OLEADA COMPLETADA +1 ❤️";
+    mensajeHTML.textContent =
+        "🏆 ¡OLEADA COMPLETADA! +1 ❤️";
 
 }
 
 
-// =====================================================
-// SIGUIENTE OLEADA
-// =====================================================
+/* =====================================================
+   SIGUIENTE OLEADA
+===================================================== */
 
 function siguienteOleada() {
 
-    cambiandoOleada = false;
+    cambiando = false;
 
 
     oleada++;
 
 
-    // =================================================
-    // CAMBIO DE NIVEL
-    // =================================================
+    /*
+       DESPUÉS DE 3 OLEADAS
+       CAMBIA EL NIVEL.
+    */
 
     if (
-        oleada >
-        OLEADAS_POR_NIVEL
+        oleada > OLEADAS_POR_NIVEL
     ) {
 
         nivel++;
@@ -1834,14 +1790,17 @@ function siguienteOleada() {
         oleada = 1;
 
 
-        // =================================================
-        // AQUÍ SE REGENERAN LAS MONEDAS
-        // =================================================
+        /*
+           MUY IMPORTANTE:
+
+           AL CAMBIAR DE NIVEL
+           SE GENERAN MONEDAS NUEVAS.
+        */
 
         crearMonedas();
 
 
-        mensaje.textContent =
+        mensajeHTML.textContent =
             "🌟 ¡NUEVO NIVEL!";
 
     }
@@ -1852,14 +1811,14 @@ function siguienteOleada() {
 }
 
 
-// =====================================================
-// DAÑO
-// =====================================================
+/* =====================================================
+   RECIBIR DAÑO
+===================================================== */
 
-function perderVida() {
+function recibirDaño() {
 
     if (
-        jugador.invulnerable
+        jugador.invulnerable > 0
     ) {
 
         return;
@@ -1869,126 +1828,115 @@ function perderVida() {
 
     jugador.vida--;
 
-    jugador.invulnerable = true;
-
-    jugador.invulnerableTiempo = 60;
+    jugador.invulnerable = 60;
 
 
-    actualizarInterfaz();
+    actualizarHUD();
 
 
     if (
         jugador.vida <= 0
     ) {
 
-        mensaje.textContent =
+        jugador.vida = 0;
+
+        mensajeHTML.textContent =
             "💀 GAME OVER";
 
 
-        setTimeout(
-            function() {
+        cambiando = true;
 
-                location.reload();
 
-            },
-            1500
-        );
+        setTimeout(function () {
+
+            location.reload();
+
+        }, 1500);
 
     }
 
 }
 
 
-// =====================================================
-// INVULNERABILIDAD
-// =====================================================
+/* =====================================================
+   ACTUALIZAR INVULNERABILIDAD
+===================================================== */
 
 function actualizarInvulnerabilidad() {
 
     if (
-        !jugador.invulnerable
+        jugador.invulnerable > 0
     ) {
 
-        return;
-
-    }
-
-
-    jugador.invulnerableTiempo--;
-
-
-    if (
-        jugador.invulnerableTiempo <= 0
-    ) {
-
-        jugador.invulnerable = false;
+        jugador.invulnerable--;
 
     }
 
 }
 
 
-// =====================================================
-// FONDO
-// =====================================================
+/* =====================================================
+   DIBUJAR FONDO
+===================================================== */
 
 function dibujarFondo() {
 
+    let fondo;
+
+
     if (nivel === 1) {
 
-        ctx.fillStyle =
-            "#101025";
+        fondo = "#101025";
 
     }
 
     else if (nivel === 2) {
 
-        ctx.fillStyle =
-            "#10251c";
+        fondo = "#10251c";
 
     }
 
     else if (nivel === 3) {
 
-        ctx.fillStyle =
-            "#24142e";
+        fondo = "#24152d";
 
     }
 
     else if (nivel === 4) {
 
-        ctx.fillStyle =
-            "#301414";
+        fondo = "#301414";
 
     }
 
     else {
 
-        ctx.fillStyle =
-            "#080808";
+        fondo = "#090909";
 
     }
 
 
+    ctx.fillStyle = fondo;
+
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        ANCHO,
+        ALTO
     );
 
 
-    // LUNA
+    /*
+       LUNA
+    */
 
-    ctx.fillStyle =
-        "#eeeeaa";
+    ctx.fillStyle = "#eeeeb0";
 
     ctx.beginPath();
 
     ctx.arc(
         820,
-        100,
-        50,
+        90,
+        45,
         0,
         Math.PI * 2
     );
@@ -1996,46 +1944,46 @@ function dibujarFondo() {
     ctx.fill();
 
 
-    // MONTAÑAS
+    /*
+       MONTAÑAS
+    */
 
-    ctx.fillStyle =
-        "#252545";
+    ctx.fillStyle = "#242440";
 
     ctx.beginPath();
 
-    ctx.moveTo(0, 450);
+    ctx.moveTo(0, 500);
 
-    ctx.lineTo(180, 250);
+    ctx.lineTo(160, 280);
 
-    ctx.lineTo(350, 450);
+    ctx.lineTo(330, 500);
 
-    ctx.lineTo(550, 220);
+    ctx.lineTo(530, 240);
 
-    ctx.lineTo(800, 450);
+    ctx.lineTo(760, 500);
 
-    ctx.lineTo(1000, 250);
+    ctx.lineTo(1000, 270);
 
     ctx.lineTo(1000, 600);
 
     ctx.lineTo(0, 600);
+
+    ctx.closePath();
 
     ctx.fill();
 
 }
 
 
-// =====================================================
-// PLATAFORMAS
-// =====================================================
+/* =====================================================
+   PLATAFORMAS
+===================================================== */
 
 function dibujarPlataformas() {
 
-    for (
-        const plataforma of plataformas
-    ) {
+    for (const plataforma of plataformas) {
 
-        ctx.fillStyle =
-            "#4a3025";
+        ctx.fillStyle = "#4b3025";
 
         ctx.fillRect(
 
@@ -2047,8 +1995,7 @@ function dibujarPlataformas() {
         );
 
 
-        ctx.fillStyle =
-            "#75a83b";
+        ctx.fillStyle = "#79ad3e";
 
         ctx.fillRect(
 
@@ -2064,20 +2011,70 @@ function dibujarPlataformas() {
 }
 
 
-// =====================================================
-// JUGADOR
-// =====================================================
+/* =====================================================
+   MONEDAS
+===================================================== */
+
+function dibujarMonedas() {
+
+    for (const moneda of monedas) {
+
+        if (moneda.recogida) {
+
+            continue;
+
+        }
+
+
+        ctx.fillStyle = "#ffd700";
+
+        ctx.beginPath();
+
+        ctx.arc(
+
+            moneda.x + 10,
+            moneda.y + 10,
+            10,
+            0,
+            Math.PI * 2
+
+        );
+
+        ctx.fill();
+
+
+        ctx.fillStyle = "#fff5a0";
+
+        ctx.fillRect(
+
+            moneda.x + 6,
+            moneda.y + 4,
+            4,
+            5
+
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   JUGADOR
+===================================================== */
 
 function dibujarJugador() {
 
-    if (
+    /*
+       PARPADEO CUANDO RECIBE DAÑO
+    */
 
-        jugador.invulnerable &&
+    if (
+        jugador.invulnerable > 0 &&
 
         Math.floor(
-            jugador.invulnerableTiempo / 5
+            jugador.invulnerable / 5
         ) % 2 === 0
-
     ) {
 
         return;
@@ -2085,9 +2082,11 @@ function dibujarJugador() {
     }
 
 
-    ctx.fillStyle =
-        "#eeeeee";
+    /*
+       CUERPO
+    */
 
+    ctx.fillStyle = "#eeeeee";
 
     ctx.fillRect(
 
@@ -2099,37 +2098,36 @@ function dibujarJugador() {
     );
 
 
-    // CABEZA
+    /*
+       CABEZA
+    */
 
-    ctx.fillStyle =
-        "#ffffff";
-
+    ctx.fillStyle = "#ffffff";
 
     ctx.fillRect(
 
-        jugador.x + 5,
+        jugador.x + 4,
         jugador.y - 15,
-        25,
+        26,
         20
 
     );
 
 
-    // OJOS
+    /*
+       OJOS
+    */
 
-    ctx.fillStyle =
-        "#111";
-
+    ctx.fillStyle = "#111111";
 
     ctx.fillRect(
 
-        jugador.x + 10,
+        jugador.x + 9,
         jugador.y - 8,
         4,
         4
 
     );
-
 
     ctx.fillRect(
 
@@ -2141,14 +2139,13 @@ function dibujarJugador() {
     );
 
 
-    // ESPADA
+    /*
+       ESPADA
+    */
 
-    if (
-        jugador.atacando
-    ) {
+    if (jugador.atacando) {
 
-        ctx.fillStyle =
-            "#eeeeee";
+        ctx.fillStyle = "#dddddd";
 
 
         if (
@@ -2159,7 +2156,7 @@ function dibujarJugador() {
 
                 jugador.x + 30,
                 jugador.y + 15,
-                50,
+                55,
                 8
 
             );
@@ -2170,9 +2167,9 @@ function dibujarJugador() {
 
             ctx.fillRect(
 
-                jugador.x - 45,
+                jugador.x - 50,
                 jugador.y + 15,
-                50,
+                55,
                 8
 
             );
@@ -2184,15 +2181,13 @@ function dibujarJugador() {
 }
 
 
-// =====================================================
-// ENEMIGOS
-// =====================================================
+/* =====================================================
+   ENEMIGOS
+===================================================== */
 
 function dibujarEnemigos() {
 
-    for (
-        const enemigo of enemigos
-    ) {
+    for (const enemigo of enemigos) {
 
         if (
             enemigo.vida <= 0
@@ -2203,72 +2198,78 @@ function dibujarEnemigos() {
         }
 
 
-        // NORMAL
+        /*
+           NORMAL
+        */
 
         if (
             enemigo.tipo === "normal"
         ) {
 
-            ctx.fillStyle =
-                "#c92f36";
+            ctx.fillStyle = "#d52d36";
 
         }
 
 
-        // NARANJA
+        /*
+           SALTADOR NARANJA
+        */
 
         else if (
             enemigo.tipo === "saltador"
         ) {
 
-            ctx.fillStyle =
-                "#ff8c00";
+            ctx.fillStyle = "#ff8500";
 
         }
 
 
-        // NEGRO
+        /*
+           TANQUE NEGRO
+        */
 
         else if (
             enemigo.tipo === "tanque"
         ) {
 
-            ctx.fillStyle =
-                "#050505";
+            ctx.fillStyle = "#050505";
 
         }
 
 
-        // VOLADOR
+        /*
+           VOLADOR
+        */
 
         else if (
             enemigo.tipo === "volador"
         ) {
 
-            ctx.fillStyle =
-                "#9b35d6";
+            ctx.fillStyle = "#a239d6";
 
         }
 
 
-        // DISPARADOR
+        /*
+           DISPARADOR
+        */
 
         else if (
             enemigo.tipo === "disparador"
         ) {
 
-            ctx.fillStyle =
-                "#3585d6";
+            ctx.fillStyle = "#3685dc";
 
         }
 
 
-        // ÉLITE
+        /*
+           ÉLITE
+        */
 
         else {
 
-            ctx.fillStyle =
-                "#e000a8";
+            ctx.fillStyle = "#e000a8";
 
         }
 
@@ -2283,11 +2284,11 @@ function dibujarEnemigos() {
         );
 
 
-        // OJOS
+        /*
+           OJOS
+        */
 
-        ctx.fillStyle =
-            "white";
-
+        ctx.fillStyle = "#ffffff";
 
         ctx.fillRect(
 
@@ -2297,7 +2298,6 @@ function dibujarEnemigos() {
             7
 
         );
-
 
         ctx.fillRect(
 
@@ -2313,28 +2313,28 @@ function dibujarEnemigos() {
         );
 
 
-        // BARRA DE VIDA
+        /*
+           BARRA DE VIDA
+        */
 
-        ctx.fillStyle =
-            "#222";
+        ctx.fillStyle = "#222222";
 
         ctx.fillRect(
 
             enemigo.x,
-            enemigo.y - 10,
+            enemigo.y - 9,
             enemigo.ancho,
             5
 
         );
 
 
-        ctx.fillStyle =
-            "#e33";
+        ctx.fillStyle = "#e33b3b";
 
         ctx.fillRect(
 
             enemigo.x,
-            enemigo.y - 10,
+            enemigo.y - 9,
 
             enemigo.ancho *
             (
@@ -2347,25 +2347,24 @@ function dibujarEnemigos() {
         );
 
 
-        // ALAS
+        /*
+           ALAS DEL VOLADOR
+        */
 
         if (
             enemigo.tipo === "volador"
         ) {
 
-            ctx.fillStyle =
-                "#c98cff";
-
+            ctx.fillStyle = "#d08cff";
 
             ctx.fillRect(
 
                 enemigo.x - 10,
                 enemigo.y + 8,
                 10,
-                20
+                18
 
             );
-
 
             ctx.fillRect(
 
@@ -2374,7 +2373,7 @@ function dibujarEnemigos() {
 
                 enemigo.y + 8,
                 10,
-                20
+                18
 
             );
 
@@ -2385,19 +2384,19 @@ function dibujarEnemigos() {
 }
 
 
-// =====================================================
-// BALAS
-// =====================================================
+/* =====================================================
+   BALAS
+===================================================== */
 
 function dibujarBalas() {
 
-    for (
-        const bala of balasJugador
-    ) {
+    /*
+       BALAS DEL JUGADOR
+    */
 
-        ctx.fillStyle =
-            "#ffff55";
+    for (const bala of balasJugador) {
 
+        ctx.fillStyle = "#ffff55";
 
         ctx.fillRect(
 
@@ -2411,13 +2410,13 @@ function dibujarBalas() {
     }
 
 
-    for (
-        const bala of balasEnemigos
-    ) {
+    /*
+       BALAS ENEMIGAS
+    */
 
-        ctx.fillStyle =
-            "#ff3333";
+    for (const bala of balasEnemigos) {
 
+        ctx.fillStyle = "#ff3030";
 
         ctx.beginPath();
 
@@ -2438,136 +2437,42 @@ function dibujarBalas() {
 }
 
 
-// =====================================================
-// MONEDAS
-// =====================================================
-
-function dibujarMonedas() {
-
-    for (
-        const moneda of monedas
-    ) {
-
-        if (
-            moneda.recogida
-        ) {
-
-            continue;
-
-        }
-
-
-        ctx.fillStyle =
-            "#ffd700";
-
-
-        ctx.beginPath();
-
-        ctx.arc(
-
-            moneda.x + 10,
-            moneda.y + 10,
-            10,
-            0,
-            Math.PI * 2
-
-        );
-
-        ctx.fill();
-
-
-        ctx.fillStyle =
-            "#fff5a0";
-
-
-        ctx.fillRect(
-
-            moneda.x + 6,
-            moneda.y + 4,
-            4,
-            4
-
-        );
-
-    }
-
-}
-
-
-// =====================================================
-// INTERFAZ
-// =====================================================
-
-function actualizarInterfaz() {
-
-    if (vidaTexto) {
-
-        vidaTexto.textContent =
-            jugador.vida;
-
-    }
-
-
-    if (monedasTexto) {
-
-        monedasTexto.textContent =
-            cantidadMonedas;
-
-    }
-
-
-    if (nivelTexto) {
-
-        nivelTexto.textContent =
-            nivel;
-
-    }
-
-
-    if (oleadaTexto) {
-
-        oleadaTexto.textContent =
-            oleada;
-
-    }
-
-}
-
-
-// =====================================================
-// ACTUALIZAR
-// =====================================================
+/* =====================================================
+   ACTUALIZAR TODO
+===================================================== */
 
 function actualizar() {
 
-    moverJugador();
+    if (!cambiando) {
 
-    actualizarAtaque();
+        moverJugador();
 
-    dispararJugador();
+        actualizarAtaque();
 
-    actualizarBalasJugador();
+        dispararJugador();
 
-    actualizarBalasEnemigos();
+        actualizarBalasJugador();
 
-    actualizarEnemigos();
+        actualizarBalasEnemigos();
 
-    actualizarInvulnerabilidad();
+        actualizarEnemigos();
 
-    recogerMonedas();
+        recogerMonedas();
 
-    comprobarOleada();
+        actualizarInvulnerabilidad();
+
+        comprobarFinOleada();
+
+    }
 
 
-    if (
-        cambiandoOleada
-    ) {
+    else {
 
-        tiempoCambio--;
+        contadorCambio--;
 
 
         if (
-            tiempoCambio <= 0
+            contadorCambio <= 0
         ) {
 
             siguienteOleada();
@@ -2577,14 +2482,14 @@ function actualizar() {
     }
 
 
-    actualizarInterfaz();
+    actualizarHUD();
 
 }
 
 
-// =====================================================
-// DIBUJAR
-// =====================================================
+/* =====================================================
+   DIBUJAR TODO
+===================================================== */
 
 function dibujar() {
 
@@ -2603,9 +2508,9 @@ function dibujar() {
 }
 
 
-// =====================================================
-// GAME LOOP
-// =====================================================
+/* =====================================================
+   BUCLE PRINCIPAL
+===================================================== */
 
 function juego() {
 
@@ -2618,9 +2523,9 @@ function juego() {
 }
 
 
-// =====================================================
-// INICIAR
-// =====================================================
+/* =====================================================
+   INICIAR
+===================================================== */
 
 crearMapa();
 
@@ -2628,13 +2533,9 @@ crearMonedas();
 
 crearOleada();
 
-actualizarInterfaz();
+actualizarHUD();
 
-if (mensaje) {
-
-    mensaje.textContent =
-        "⚔️ NIVEL 1 - OLEADA 1";
-
-}
+mensajeHTML.textContent =
+    "⚔️ NIVEL 1 - OLEADA 1";
 
 juego();
