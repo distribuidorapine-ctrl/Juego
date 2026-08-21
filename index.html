@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Juego</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #222;
+            color: white;
+            margin-top: 100px;
+        }
+
+        button {
+            font-size: 25px;
+            padding: 15px 30px;
+            cursor: pointer;
+        }
+
+        #contador {
+            font-size: 40px;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎮 Mi Juego</h1>
+
+    <p>Presiona el botón</p>
+
+    <div id="contador">0</div>
+
+    <button onclick="sumar()">🎯 PUNTO</button>
+
+    <script>
+        let puntos = 0;
+
+        function sumar() {
+            puntos++;
+            document.getElementById("contador").textContent = puntos;
+        }
+    </script>
+
+</body>
+</html>
