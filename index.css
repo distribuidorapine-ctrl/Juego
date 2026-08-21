@@ -1,123 +1,76 @@
-* {
-    box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="es">
 
-html,
-body {
-    margin: 0;
-    padding: 0;
-}
+<head>
+    <meta charset="UTF-8">
 
-body {
-    min-height: 100vh;
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    background:
-        radial-gradient(
-            circle at top,
-            #20204a 0%,
-            #0c0c18 55%,
-            #05050a 100%
-        );
+    <title>Mi Plataformer</title>
 
-    color: white;
+    <link rel="stylesheet" href="index.css">
+</head>
 
-    font-family: Arial, Helvetica, sans-serif;
+<body>
 
-    text-align: center;
+    <header>
 
-    overflow-x: hidden;
-}
+        <h1>⚔️ MI PLATAFORMER</h1>
 
-h1 {
-    margin: 15px 0 8px;
+        <div id="estado">
 
-    font-size: 32px;
+            <span>❤️ Vida: <b id="vida">5</b></span>
 
-    text-shadow:
-        0 0 10px #7777ff;
-}
+            <span>🪙 Monedas: <b id="monedas">0</b></span>
 
-#info {
-    display: inline-block;
+            <span>🌟 Nivel: <b id="nivel">1</b></span>
 
-    margin-bottom: 10px;
+            <span>👾 Oleada: <b id="oleada">1</b></span>
 
-    padding: 8px 15px;
+        </div>
 
-    border: 2px solid #555577;
+        <div id="mensaje">
+            Preparando juego...
+        </div>
 
-    border-radius: 10px;
+    </header>
 
-    background: rgba(0, 0, 0, 0.45);
 
-    font-size: 18px;
+    <main>
 
-    font-weight: bold;
-}
+        <canvas
+            id="game"
+            width="1000"
+            height="600"
+        ></canvas>
 
-#game {
-    display: block;
+    </main>
 
-    width: 1000px;
 
-    max-width: 95vw;
+    <section id="controles">
 
-    height: auto;
+        <b>A / D</b> Mover
 
-    margin: 0 auto;
+        <span>|</span>
 
-    border: 3px solid #eeeeee;
+        <b>ESPACIO</b> Saltar
 
-    border-radius: 6px;
+        <span>|</span>
 
-    background: #111122;
+        <b>J</b> Atacar
 
-    box-shadow:
-        0 0 20px rgba(0, 0, 0, 0.8);
-}
+        <span>|</span>
 
-#controles {
-    margin-top: 12px;
+        <b>K</b> Disparar
 
-    font-size: 16px;
+    </section>
 
-    color: #dddddd;
-}
 
-#mensaje {
-    min-height: 30px;
+    <script src="index.javascript"></script>
 
-    margin-top: 10px;
+</body>
 
-    font-size: 22px;
-
-    font-weight: bold;
-
-    color: #ffffff;
-
-    text-shadow:
-        0 0 8px #7777ff;
-}
-
-span {
-    color: #ffffff;
-}
-
-@media (max-width: 700px) {
-
-    h1 {
-        font-size: 24px;
-    }
-
-    #info {
-        font-size: 14px;
-    }
-
-    #controles {
-        font-size: 13px;
-    }
-
-    #mensaje {
-        font-size: 18px;
-    }
-}
+</html>
