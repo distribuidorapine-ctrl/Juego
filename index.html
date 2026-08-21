@@ -3,48 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Juego</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: #222;
-            color: white;
-            margin-top: 100px;
-        }
-
-        button {
-            font-size: 25px;
-            padding: 15px 30px;
-            cursor: pointer;
-        }
-
-        #contador {
-            font-size: 40px;
-            margin: 20px;
-        }
-    </style>
+    <title>Mi Plataformer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <h1>🎮 Mi Juego</h1>
+    <h1>⚔️ Mi Plataformer</h1>
 
-    <p>Presiona el botón</p>
+    <div id="info">
+        ❤️ Vida: <span id="vida">5</span>
+        &nbsp;&nbsp;
+        🪙 Monedas: <span id="monedas">0</span>
+    </div>
 
-    <div id="contador">0</div>
+    <canvas id="game" width="1000" height="600"></canvas>
 
-    <button onclick="sumar()">🎯 PUNTO</button>
+    <p>
+        <b>A / D</b> = Mover |
+        <b>ESPACIO</b> = Saltar |
+        <b>J</b> = Ataque |
+        <b>K</b> = Disparo
+    </p>
 
-    <script>
-        let puntos = 0;
-
-        function sumar() {
-            puntos++;
-            document.getElementById("contador").textContent = puntos;
-        }
-    </script>
-
+    <script src="game.js"></script>
 </body>
 </html>
