@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,66 +12,167 @@
 
     <title>Mi Plataformer</title>
 
-    <link rel="stylesheet" href="./index.css">
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #20204a,
+                    #080812 70%
+                );
+
+            color: white;
+
+            font-family: Arial, sans-serif;
+
+            text-align: center;
+
+        }
+
+        h1 {
+
+            margin: 15px 0 8px;
+
+            color: #ffffff;
+
+        }
+
+        #info {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 25px;
+
+            flex-wrap: wrap;
+
+            margin: 10px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+        #mensaje {
+
+            min-height: 25px;
+
+            margin: 5px;
+
+            color: #ffd700;
+
+            font-weight: bold;
+
+        }
+
+        canvas {
+
+            display: block;
+
+            margin: 10px auto;
+
+            width: min(1000px, 95vw);
+
+            height: auto;
+
+            border: 3px solid white;
+
+            background: #101025;
+
+            box-shadow:
+                0 0 20px rgba(255,255,255,0.15);
+
+        }
+
+        p {
+
+            margin: 10px;
+
+            font-size: 16px;
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <h1>⚔️ MI PLATAFORMER</h1>
+
+    <h1>⚔️ Mi Plataformer</h1>
+
 
     <div id="info">
 
-        ❤️ Vida:
-        <span id="vida">5</span>
+        <span>
+            ❤️ Vida:
+            <span id="vida">5</span>
+        </span>
 
-        &nbsp;&nbsp;
+        <span>
+            🪙 Monedas:
+            <span id="monedas">0</span>
+        </span>
 
-        🪙 Monedas:
-        <span id="monedas">0</span>
+        <span>
+            🌟 Nivel:
+            <span id="nivel">1</span>
+        </span>
 
-        &nbsp;&nbsp;
-
-        🏆 Nivel:
-        <span id="nivel">1</span>
-
-        &nbsp;&nbsp;
-
-        🌊 Oleada:
-        <span id="oleada">1</span>
+        <span>
+            👾 Oleada:
+            <span id="oleada">1</span>
+        </span>
 
     </div>
+
+
+    <div id="mensaje">
+        Cargando juego...
+    </div>
+
 
     <canvas
         id="game"
         width="1000"
-        height="600">
-    </canvas>
+        height="600"
+    ></canvas>
 
-    <div id="controles">
 
-        <b>A / D</b> Mover
+    <p>
 
-        &nbsp; | &nbsp;
+        <b>A / D</b> = Mover
 
-        <b>ESPACIO</b> Saltar
+        &nbsp;|
 
-        &nbsp; | &nbsp;
+        <b>ESPACIO</b> = Saltar
 
-        <b>J</b> Atacar
+        &nbsp;|
 
-        &nbsp; | &nbsp;
+        <b>J</b> = Atacar
 
-        <b>K</b> Disparar
+        &nbsp;|
 
-    </div>
+        <b>K</b> = Disparar
 
-    <div id="mensaje">
-        NIVEL 1 - OLEADA 1
-    </div>
+    </p>
 
-    <!-- IMPORTANTE:
-         este es el nombre REAL de tu archivo -->
-    <script src="./index.javascript"></script>
+
+    <script src="index.javascript"></script>
+
 
 </body>
 
