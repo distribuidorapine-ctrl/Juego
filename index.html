@@ -1,335 +1,28 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Mi Plataformer</title>
 
-
-    <style>
-
-        /* =========================
-           CONFIGURACIÓN GENERAL
-        ========================= */
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
-        }
-
-
-        /* =========================
-           FONDO DE LA PÁGINA
-        ========================= */
-
-        body {
-
-            min-height: 100vh;
-
-            background:
-                radial-gradient(
-                    circle at 50% 15%,
-                    #3b3b70 0%,
-                    #202044 25%,
-                    #101020 60%,
-                    #050509 100%
-                );
-
-            color: white;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            text-align: center;
-
-            overflow-x: hidden;
-
-            padding-top: 20px;
-        }
-
-
-        /* =========================
-           TÍTULO
-        ========================= */
-
-        h1 {
-
-            margin: 0 0 15px 0;
-
-            font-size: 40px;
-
-            letter-spacing: 2px;
-
-            color: #f1f1ff;
-
-            text-shadow:
-                0 0 5px #ffffff,
-                0 0 15px #7777cc,
-                0 0 30px #444477;
-        }
-
-
-        /* =========================
-           INFORMACIÓN DEL JUEGO
-        ========================= */
-
-        #info {
-
-            display: inline-block;
-
-            margin-bottom: 15px;
-
-            padding: 10px 25px;
-
-            background:
-                rgba(5, 5, 15, 0.85);
-
-            border:
-                2px solid #7777aa;
-
-            border-radius: 12px;
-
-            font-size: 20px;
-
-            box-shadow:
-                0 0 10px rgba(100, 100, 180, 0.5),
-                inset 0 0 10px rgba(80, 80, 150, 0.2);
-        }
-
-
-        /* =========================
-           VIDA
-        ========================= */
-
-        #vida {
-
-            color: #ff6b6b;
-
-            font-weight: bold;
-
-            text-shadow:
-                0 0 8px #ff3333;
-        }
-
-
-        /* =========================
-           MONEDAS
-        ========================= */
-
-        #monedas {
-
-            color: #ffd84d;
-
-            font-weight: bold;
-
-            text-shadow:
-                0 0 8px #ffbb00;
-        }
-
-
-        /* =========================
-           CANVAS DEL JUEGO
-        ========================= */
-
-        #game {
-
-            display: block;
-
-            margin:
-                0 auto;
-
-            width: 1000px;
-
-            max-width: 95vw;
-
-            height: auto;
-
-            background:
-                linear-gradient(
-                    #171735,
-                    #101020
-                );
-
-            border:
-                4px solid #aaaadd;
-
-            border-radius: 10px;
-
-            box-shadow:
-
-                0 0 10px #7777bb,
-
-                0 0 25px #55558f,
-
-                0 0 60px rgba(
-                    70,
-                    70,
-                    150,
-                    0.5
-                );
-        }
-
-
-        /* =========================
-           CONTROLES
-        ========================= */
-
-        p {
-
-            margin-top: 18px;
-
-            color: #ccccdd;
-
-            font-size: 16px;
-
-            line-height: 2;
-        }
-
-
-        /* =========================
-           TECLAS
-        ========================= */
-
-        p b {
-
-            padding:
-                5px 9px;
-
-            margin:
-                2px;
-
-            color: white;
-
-            background:
-                #29294d;
-
-            border:
-                1px solid #7777aa;
-
-            border-radius: 6px;
-
-            box-shadow:
-                0 0 5px rgba(
-                    100,
-                    100,
-                    180,
-                    0.4
-                );
-        }
-
-
-        /* =========================
-           EFECTO AL PASAR EL RATÓN
-        ========================= */
-
-        #game:hover {
-
-            border-color:
-                #eeeeff;
-
-            box-shadow:
-
-                0 0 15px #aaaadd,
-
-                0 0 35px #7777bb,
-
-                0 0 70px rgba(
-                    100,
-                    100,
-                    200,
-                    0.7
-                );
-        }
-
-
-        /* =========================
-           MÓVILES
-        ========================= */
-
-        @media (max-width: 700px) {
-
-            body {
-                padding-top: 10px;
-            }
-
-            h1 {
-
-                font-size: 28px;
-
-            }
-
-            #info {
-
-                font-size: 16px;
-
-                padding:
-                    8px 15px;
-
-            }
-
-            p {
-
-                font-size: 13px;
-
-            }
-
-        }
-
-    </style>
-
+    <link rel="stylesheet" href="./index.css">
 </head>
-
 
 <body>
 
-
-    <!-- =========================
-         TÍTULO
-    ========================== -->
-
-    <h1>
-        ⚔️ Mi Plataformer
-    </h1>
-
-
-    <!-- =========================
-         INFORMACIÓN
-    ========================== -->
+    <h1>⚔️ MI PLATAFORMER</h1>
 
     <div id="info">
-
-        ❤️ Vida:
-        <span id="vida">
-            5
-        </span>
-
-        &nbsp;&nbsp;&nbsp;
-
-        🪙 Monedas:
-        <span id="monedas">
-            0
-        </span>
-
+        ❤️ Vida: <span id="vida">5</span>
+        &nbsp;&nbsp;
+        🪙 Monedas: <span id="monedas">0</span>
+        &nbsp;&nbsp;
+        🏆 Nivel: <span id="nivel">1</span>
+        &nbsp;&nbsp;
+        🌊 Oleada: <span id="oleada">1</span>
     </div>
-
-
-    <!-- =========================
-         JUEGO
-    ========================== -->
 
     <canvas
         id="game"
@@ -337,47 +30,19 @@
         height="600">
     </canvas>
 
+    <div id="controles">
+        <b>A / D</b> Mover
+        &nbsp; | &nbsp;
+        <b>W / ↑ / ESPACIO</b> Saltar
+        &nbsp; | &nbsp;
+        <b>J</b> Atacar
+        &nbsp; | &nbsp;
+        <b>K</b> Disparar
+    </div>
 
-    <!-- =========================
-         CONTROLES
-    ========================== -->
-
-    <p>
-
-        <b>A / ←</b>
-        Mover izquierda
-
-        |
-
-        <b>D / →</b>
-        Mover derecha
-
-        |
-
-        <b>ESPACIO</b>
-        Saltar
-
-        |
-
-        <b>J</b>
-        Ataque
-
-        |
-
-        <b>K</b>
-        Disparo
-
-    </p>
-
-
-    <!-- =========================
-         JAVASCRIPT DEL JUEGO
-    ========================== -->
+    <div id="mensaje"></div>
 
     <script src="./index.javascript"></script>
 
-
 </body>
-
 </html>
-```
