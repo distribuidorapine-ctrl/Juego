@@ -2,16 +2,16 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Mi Plataformer</title>
 
     <link rel="stylesheet" href="./index.css">
-
 </head>
 
 <body>
@@ -40,70 +40,37 @@
 
     </div>
 
-
     <canvas
         id="game"
         width="1000"
         height="600">
     </canvas>
 
+    <div id="controles">
 
-    <p>
-        A / D = Mover |
-        ESPACIO = Saltar |
-        J = Atacar |
-        K = Disparar
-    </p>
+        <b>A / D</b> Mover
 
+        &nbsp; | &nbsp;
 
-    <h2 id="mensaje">
-        ¡JUEGO FUNCIONANDO!
-    </h2>
+        <b>ESPACIO</b> Saltar
 
+        &nbsp; | &nbsp;
 
-    <!-- PRUEBA DIRECTA -->
-    <script>
+        <b>J</b> Atacar
 
-        document.getElementById("mensaje").textContent =
-            "✅ JAVASCRIPT FUNCIONA";
+        &nbsp; | &nbsp;
 
-        const canvas =
-            document.getElementById("game");
+        <b>K</b> Disparar
 
-        const ctx =
-            canvas.getContext("2d");
+    </div>
 
+    <div id="mensaje">
+        NIVEL 1 - OLEADA 1
+    </div>
 
-        ctx.fillStyle = "#111122";
-
-        ctx.fillRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        ctx.fillStyle = "white";
-
-        ctx.font = "40px Arial";
-
-        ctx.fillText(
-            "JUEGO FUNCIONANDO",
-            300,
-            280
-        );
-
-
-        ctx.font = "22px Arial";
-
-        ctx.fillText(
-            "GitHub Pages está ejecutando JavaScript",
-            260,
-            330
-        );
-
-    </script>
+    <!-- IMPORTANTE:
+         este es el nombre REAL de tu archivo -->
+    <script src="./index.javascript"></script>
 
 </body>
 
