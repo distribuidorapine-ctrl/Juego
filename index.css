@@ -1,76 +1,143 @@
-<!DOCTYPE html>
-<html lang="es">
+* {
+    box-sizing: border-box;
+}
 
-<head>
-    <meta charset="UTF-8">
+body {
+    margin: 0;
+    min-height: 100vh;
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    background:
+        radial-gradient(circle at top, #29245c 0%, #111126 45%, #07070d 100%);
 
-    <title>Mi Plataformer</title>
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
 
-    <link rel="stylesheet" href="index.css">
-</head>
+    text-align: center;
+}
 
-<body>
+header {
+    padding: 15px 10px 8px;
+}
 
-    <header>
+h1 {
+    margin: 0 0 12px;
 
-        <h1>⚔️ MI PLATAFORMER</h1>
+    font-size: clamp(28px, 5vw, 48px);
 
-        <div id="estado">
+    color: #ffd43b;
 
-            <span>❤️ Vida: <b id="vida">5</b></span>
+    text-shadow:
+        0 0 8px #ff9d00,
+        0 0 20px rgba(255, 180, 0, 0.5);
+}
 
-            <span>🪙 Monedas: <b id="monedas">0</b></span>
+#estado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
 
-            <span>🌟 Nivel: <b id="nivel">1</b></span>
+    gap: 12px;
 
-            <span>👾 Oleada: <b id="oleada">1</b></span>
+    margin-bottom: 10px;
+}
 
-        </div>
+#estado span {
+    background: rgba(20, 20, 40, 0.9);
 
-        <div id="mensaje">
-            Preparando juego...
-        </div>
+    border: 2px solid #55557c;
 
-    </header>
+    border-radius: 10px;
 
+    padding: 8px 14px;
 
-    <main>
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
 
-        <canvas
-            id="game"
-            width="1000"
-            height="600"
-        ></canvas>
+#estado b {
+    color: #ffd43b;
+}
 
-    </main>
+#mensaje {
+    min-height: 28px;
 
+    font-size: 18px;
+    font-weight: bold;
 
-    <section id="controles">
+    color: #ffffff;
+}
 
-        <b>A / D</b> Mover
+main {
+    display: flex;
+    justify-content: center;
 
-        <span>|</span>
+    width: 100%;
+    padding: 10px;
+}
 
-        <b>ESPACIO</b> Saltar
+canvas {
+    display: block;
 
-        <span>|</span>
+    width: min(1000px, 100%);
+    height: auto;
 
-        <b>J</b> Atacar
+    border: 4px solid #6868a0;
+    border-radius: 12px;
 
-        <span>|</span>
+    background: #101025;
 
-        <b>K</b> Disparar
+    box-shadow:
+        0 0 20px rgba(0, 0, 0, 0.8),
+        0 0 35px rgba(80, 70, 180, 0.25);
+}
 
-    </section>
+#controles {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 
+    gap: 10px;
 
-    <script src="index.javascript"></script>
+    padding: 12px;
 
-</body>
+    font-size: 15px;
+}
 
-</html>
+#controles span {
+    background: rgba(20, 20, 35, 0.9);
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    border: 1px solid #48486b;
+}
+
+#controles b {
+    color: #ffd43b;
+}
+
+@media (max-width: 600px) {
+
+    header {
+        padding-top: 10px;
+    }
+
+    #estado {
+        gap: 6px;
+    }
+
+    #estado span {
+        padding: 6px 8px;
+        font-size: 13px;
+    }
+
+    #mensaje {
+        font-size: 14px;
+    }
+
+    #controles {
+        font-size: 12px;
+    }
+
+}
