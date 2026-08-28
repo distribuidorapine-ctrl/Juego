@@ -1,36 +1,68 @@
 "use strict";
 
-console.log("INDEX.JS SE ESTA CARGANDO");
+console.log("================================");
+console.log("INDEX.JS CARGADO");
+console.log("================================");
 
-window.addEventListener("DOMContentLoaded", function () {
+function iniciarPrueba() {
 
-    const mensaje = document.getElementById("mensaje");
-    const error = document.getElementById("errorJuego");
-    const canvas = document.getElementById("game");
+```
+const mensaje = document.getElementById("mensaje");
+const canvas = document.getElementById("game");
 
-    if (!mensaje) {
-        console.error("NO EXISTE #mensaje");
-        return;
-    }
+if (!mensaje) {
+    alert("ERROR: No existe el elemento mensaje");
+    return;
+}
 
-    if (!canvas) {
-        mensaje.textContent = "ERROR: NO EXISTE EL CANVAS";
-        return;
-    }
+if (!canvas) {
+    mensaje.textContent = "ERROR: NO SE ENCUENTRA EL CANVAS";
+    return;
+}
 
-    mensaje.textContent = "✅ ¡JUEGO CARGADO!";
+mensaje.textContent = "✅ JAVASCRIPT FUNCIONA";
 
-    const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#101025";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "#111122";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "white";
-    ctx.font = "40px Arial";
-    ctx.fillText("MI PLATAFORMER", 320, 250);
+ctx.fillStyle = "#ffffff";
+ctx.font = "bold 45px Arial";
+ctx.textAlign = "center";
 
-    ctx.font = "24px Arial";
-    ctx.fillText("A/D = Mover", 400, 320);
-    ctx.fillText("ESPACIO = Saltar", 370, 360);
+ctx.fillText(
+    "⚔️ MI PLATAFORMER",
+    canvas.width / 2,
+    250
+);
 
-});
+ctx.font = "28px Arial";
+
+ctx.fillText(
+    "JAVASCRIPT ESTÁ FUNCIONANDO",
+    canvas.width / 2,
+    320
+);
+
+console.log("PRUEBA COMPLETADA");
+```
+
+}
+
+if (document.readyState === "loading") {
+
+```
+document.addEventListener(
+    "DOMContentLoaded",
+    iniciarPrueba
+);
+```
+
+} else {
+
+```
+iniciarPrueba();
+```
+
+}
