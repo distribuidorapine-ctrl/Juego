@@ -1,22 +1,31 @@
+```css
 * {
     box-sizing: border-box;
 }
 
+html,
 body {
     margin: 0;
-    min-height: 100vh;
+    padding: 0;
+    min-height: 100%;
+}
 
+body {
     background:
-        radial-gradient(circle at top, #29245c 0%, #111126 45%, #07070d 100%);
+        radial-gradient(circle at top, #30245c 0%, #15142b 45%, #080811 100%);
 
     color: white;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     text-align: center;
 }
 
 header {
-    padding: 15px 10px 8px;
+    padding: 14px 10px 5px;
 }
 
 h1 {
@@ -24,120 +33,145 @@ h1 {
 
     font-size: clamp(28px, 5vw, 48px);
 
-    color: #ffd43b;
+    color: #ffd83d;
 
     text-shadow:
-        0 0 8px #ff9d00,
-        0 0 20px rgba(255, 180, 0, 0.5);
+        0 0 8px #ff9f00,
+        0 0 20px #ff9f004d;
 }
 
 #estado {
     display: flex;
+
     justify-content: center;
     align-items: center;
+
     flex-wrap: wrap;
 
-    gap: 12px;
+    gap: 8px;
 
     margin-bottom: 10px;
 }
 
-#estado span {
-    background: rgba(20, 20, 40, 0.9);
+#estado div {
+    padding: 8px 14px;
 
-    border: 2px solid #55557c;
+    background: #17172c;
+
+    border: 2px solid #4c4c78;
 
     border-radius: 10px;
 
-    padding: 8px 14px;
+    font-weight: bold;
 
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    box-shadow:
+        0 4px 10px #00000066;
 }
 
-#estado b {
-    color: #ffd43b;
+#estado strong {
+    color: #ffd83d;
+
+    margin-left: 4px;
 }
 
 #mensaje {
-    min-height: 28px;
-
-    font-size: 18px;
-    font-weight: bold;
+    min-height: 25px;
 
     color: #ffffff;
+
+    font-weight: bold;
+
+    font-size: 17px;
 }
 
 main {
     display: flex;
+
     justify-content: center;
 
     width: 100%;
-    padding: 10px;
+
+    padding: 8px;
 }
 
 canvas {
     display: block;
 
     width: min(1000px, 100%);
+
     height: auto;
 
-    border: 4px solid #6868a0;
+    border: 4px solid #7777ad;
+
     border-radius: 12px;
 
     background: #101025;
 
     box-shadow:
-        0 0 20px rgba(0, 0, 0, 0.8),
-        0 0 35px rgba(80, 70, 180, 0.25);
+        0 0 25px #000000cc,
+        0 0 35px #6259c944;
 }
 
 #controles {
     display: flex;
+
     justify-content: center;
+
     flex-wrap: wrap;
 
-    gap: 10px;
+    gap: 8px;
 
     padding: 12px;
-
-    font-size: 15px;
 }
 
-#controles span {
-    background: rgba(20, 20, 35, 0.9);
-
+#controles div {
     padding: 8px 12px;
+
+    background: #17172c;
+
+    border: 1px solid #45456c;
 
     border-radius: 8px;
 
-    border: 1px solid #48486b;
+    font-size: 14px;
 }
 
 #controles b {
-    color: #ffd43b;
+    color: #ffd83d;
+}
+
+#errorJuego {
+    display: none;
+
+    max-width: 800px;
+
+    margin: 10px auto;
+
+    padding: 12px;
+
+    color: white;
+
+    background: #7c2020;
+
+    border: 2px solid #ff5555;
+
+    border-radius: 8px;
 }
 
 @media (max-width: 600px) {
 
-    header {
-        padding-top: 10px;
-    }
-
-    #estado {
-        gap: 6px;
-    }
-
-    #estado span {
+    #estado div {
         padding: 6px 8px;
-        font-size: 13px;
+        font-size: 12px;
     }
 
     #mensaje {
         font-size: 14px;
     }
 
-    #controles {
-        font-size: 12px;
+    #controles div {
+        font-size: 11px;
     }
 
 }
+```
