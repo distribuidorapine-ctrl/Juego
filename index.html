@@ -3,37 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRUEBA NUEVA</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: black;
-            color: white;
-            font-family: Arial;
-            text-align: center;
-        }
+    <title>Mi Plataformer</title>
 
-        h1 {
-            margin-top: 100px;
-            font-size: 50px;
-            color: lime;
-        }
-
-        #prueba {
-            font-size: 30px;
-            color: yellow;
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
 
-    <h1>🎮 JUEGO NUEVO</h1>
+    <header>
+        <h1>⚔️ MI PLATAFORMER</h1>
 
-    <div id="prueba">
-        SI ESTÁS VIENDO ESTO, GITHUB ESTÁ USANDO ESTE INDEX.HTML
-    </div>
+        <div id="estado">
+            <span>❤️ Vida: <b id="vida">5</b></span>
+            <span>🪙 Monedas: <b id="monedas">0</b></span>
+            <span>🌟 Nivel: <b id="nivel">1</b></span>
+            <span>👾 Oleada: <b id="oleada">1</b></span>
+        </div>
+
+        <div id="mensaje">
+            Preparando juego...
+        </div>
+    </header>
+
+    <main>
+        <canvas id="game" width="1000" height="600"></canvas>
+    </main>
+
+    <section id="controles">
+        <span><b>A / D</b> Mover</span>
+        <span><b>ESPACIO</b> Saltar</span>
+        <span><b>J</b> Atacar</span>
+        <span><b>K</b> Disparar</span>
+    </section>
+
+    <!-- IMPORTANTE: el archivo se llama index.js -->
+    <script src="./index.js"></script>
 
 </body>
 </html>
