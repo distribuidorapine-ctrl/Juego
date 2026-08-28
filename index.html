@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +7,7 @@
 
     <title>Mi Plataformer</title>
 
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="./index.css">
 </head>
 
 <body>
@@ -15,15 +16,13 @@
         <h1>⚔️ MI PLATAFORMER</h1>
 
         <div id="estado">
-            <span>❤️ Vida: <b id="vida">5</b></span>
-            <span>🪙 Monedas: <b id="monedas">0</b></span>
-            <span>🌟 Nivel: <b id="nivel">1</b></span>
-            <span>👾 Oleada: <b id="oleada">1</b></span>
+            <div>❤️ VIDA <strong id="vida">5</strong></div>
+            <div>🪙 MONEDAS <strong id="monedas">0</strong></div>
+            <div>🌟 NIVEL <strong id="nivel">1</strong></div>
+            <div>👾 OLEADA <strong id="oleada">1</strong></div>
         </div>
 
-        <div id="mensaje">
-            Preparando juego...
-        </div>
+        <div id="mensaje">Preparando juego...</div>
     </header>
 
     <main>
@@ -31,14 +30,17 @@
     </main>
 
     <section id="controles">
-        <span><b>A / D</b> Mover</span>
-        <span><b>ESPACIO</b> Saltar</span>
-        <span><b>J</b> Atacar</span>
-        <span><b>K</b> Disparar</span>
+        <div><b>A / D</b> Mover</div>
+        <div><b>ESPACIO</b> Saltar</div>
+        <div><b>J</b> Atacar</div>
+        <div><b>K</b> Disparar</div>
     </section>
 
-    <!-- IMPORTANTE: el archivo se llama index.js -->
+    <div id="errorJuego"></div>
+
+    <!-- DEBE SER index.js -->
     <script src="./index.js"></script>
 
 </body>
 </html>
+```
